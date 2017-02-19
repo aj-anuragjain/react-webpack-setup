@@ -23,9 +23,9 @@ let AsideRight = React.createClass({
         return <section className="aside-right">
             <Router history={browserHistory}>
                 <Route path="/" component={Page1} />
-                <Route path="/user/plan/chooser" component={Page2} />
-                <Route path="/user/plan/booking" component={Page3} />
-                <Route path="/user/plan/booking/complete" component={Page4} />
+                <Route path="/page1" component={Page2} />
+                <Route path="/page2" component={Page3} />
+                <Route path="/page3" component={Page4} />
             </Router>
         </section>
     }
