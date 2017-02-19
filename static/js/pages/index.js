@@ -8,9 +8,9 @@ import {Router, Route, Link, browserHistory} from "react-router"
 
 
 import Page1 from "./page1"
-import Page2 from "./page4"
-import Page3 from "./page2"
-import Page4 from "./page3"
+import Page2 from "./page2"
+import Page3 from "./page3"
+import home from "./home"
 
 
 import Nav from "../components/nav"
@@ -22,10 +22,10 @@ let AsideRight = React.createClass({
         "use strict";
         return <section className="aside-right">
             <Router history={browserHistory}>
-                <Route path="/" component={Page1} />
-                <Route path="/page1" component={Page2} />
-                <Route path="/page2" component={Page3} />
-                <Route path="/page3" component={Page4} />
+                <Route path="/" component={home} />
+                <Route path="/page1" component={Page1} />
+                <Route path="/page2" component={Page2} />
+                <Route path="/page3" component={Page3} />
             </Router>
         </section>
     }

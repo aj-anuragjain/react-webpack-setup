@@ -9,6 +9,6 @@ import _ from "lodash"
 export default React.createClass({
     render(){
         "use strict";
-        return <div className="aside-right-content"></div>
+        return <div className="aside-right-content">Home Page</div>
     }
 })

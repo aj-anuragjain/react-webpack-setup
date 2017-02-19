@@ -10,6 +10,6 @@ import _ from "lodash"
 export default React.createClass({
     render(){
         "use strict";
-        return <section className="aside-left">-</section>
+        return <section className="aside-left"></section>
     }
 });

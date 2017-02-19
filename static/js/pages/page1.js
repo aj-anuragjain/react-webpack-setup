@@ -9,6 +9,6 @@ import Moment from "moment"
 
 export default React.createClass({
    render(){
-       return <div className="aside-right-content"></div>
+       return <div className="aside-right-content">Page 1</div>
    }
 });
