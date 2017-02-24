@@ -1,15 +1,17 @@
-# react-webpack-setup
+## react-webpack-setup
 
-##First time setup
+### Pre-requisite
 
-###Assume you have already install
-####node >=6.9.2
-####global setup of webpack = 1.14.0
+node v6 || webpack v2
 
-###Run follwing command:
-####./directory
-####npm install
-####npm start
+### Development Server:
 
-####Read Out @ localhost:9999
+./to/project/directory
+npm run dev
+
+#### Production Server:
+./to/project/directory
+npm run prod
+
+Read Out @ localhost:9999
 

@@ -1,79 +1,132 @@
-/**
- * Created by jain-hub on 3/2/17.
- */
-
-var webpack = require("webpack"),
-    ExtractTextPlugin = require("extract-text-webpack-plugin"),
-    path = require("path");
 
 
-function absolute_path(arg){
-    "use strict";
-    return path.join(__dirname + arg)
+const path = require("path"),
+      ExtractTextPlugin = require("extract-text-webpack-plugin"),
+      webpack = require("webpack");
+
+
+function absolutepath(){
+    let args = Array.prototype.slice.call(arguments);
+    args.unshift(__dirname);
+    return path.resolve(path.join.apply(null, args));
 }
 
 
-var STYLE_PATH, JS_PATH, BUILD_PATH, SASS_WATCH, JS_WATCH;
+let entry_js = absolutepath("/static/js/core.js");
 
 
-STYLE_PATH = absolute_path("/static/js/style.js");
-JS_PATH = absolute_path("/static/js/core.js");
-BUILD_PATH = absolute_path("/build/");
-SASS_WATCH = absolute_path("/static/scss/");
-JS_WATCH = absolute_path("/static/js/");
+let entry_sass = absolutepath("/static/js/style.js");
 
 
-module.exports = {
-    devtool: "source-map",
+let js_watcher = [
+    absolutepath("/static/js/"),
+];
+
+
+let js_exclude = [
+    absolutepath("/node_modules/"),
+];
+
+
+let sass_watcher = [
+    absolutepath("/static/scss/"),
+];
+
+
+let output_path = absolutepath("/static/build/");
+
+
+const config = {
+    target: "web",
     entry: {
-        style: STYLE_PATH,
-        bundle: JS_PATH,
+        app: entry_js,
+        style: entry_sass,
     },
-    output:{
-        path: BUILD_PATH,
+    output: {
+        path: output_path,
         filename: "js/[name].js",
-        publicPath: "/build/",
-        pathInfo: true
+        publicPath: "/static/build/",
+        pathinfo: process.env.NODE_ENV !== 'production'
     },
-    plugins: [
-        new webpack.optimize.DedupePlugin(),
-        new ExtractTextPlugin("css/[name].css", {allChunks: true}),
-        /*new webpack.optimize.UglifyJsPlugin(),
-        new webpack.DefinePlugin({
-             'process.env': {
-                NODE_ENV: JSON.stringify('production')
-             }
-         }),*/
-    ],
     module: {
-        loaders: [
+        rules: [
             {
-                test : /\.js?/,
-                include: JS_WATCH,
+                test: /\.js?/,
+                include: js_watcher,
+                exclude: js_exclude,
                 loader: "babel-loader",
-                query: {
-                    presets: ['es2015', 'react', 'stage-0']
+                options: {
+                    presets: ["es2015", "react", "stage-0"]
                 }
             },
             {
-                test: /\.css$/,
-                loader: ExtractTextPlugin.extract("style", "css?sourceMap")
-            },
-            {
                 test: /\.scss$/,
-                loader: ExtractTextPlugin.extract("style", "css?sourceMap!sass")
+                use: ExtractTextPlugin.extract({
+                    fallback: "style-loader",
+                    loader: [
+                        {loader: "css-loader"},
+                        {
+                            loader: "sass-loader",
+                            options: {
+                                includePaths: sass_watcher
+                            }
+                        },
+                    ],
+                })
             },
             {
                 test: /\.(png|jpg|jpeg|gif|svg)(\?v=\d+\.\d+\.\d+)?$/,
-                loader: 'file-loader?name=img/[hash].[ext]'
+                use: 'file-loader?name=img/[hash].[ext]'
             },
-            { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "url-loader?limit=10000&mimetype=application/font-woff&name=fonts/[hash].[ext]" },
-            { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "file?name=fonts/[hash].[ext]" },
+            { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, use: "url-loader?limit=10000&mimetype=application/font-woff&name=fonts/[hash].[ext]" },
+            { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, use: "file-loader?name=fonts/[hash].[ext]" },
         ]
     },
-    sassLoader: {
-        includePaths: [
-            SASS_WATCH,
-        ]
-    }
+    plugins: [
+        new ExtractTextPlugin({
+            filename: "css/[name].css",
+            disable: process.env.NODE_ENV !== 'production'
+        }),
+        new webpack.DefinePlugin({
+            'process.env': {
+                'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+            }
+        }),
+        new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/]),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'vendor',
+            filename: 'js/[name].common.js',
+        }),
+    ],
+    performance: {
+        hints: "warning",
+    },
+    stats: {
+        assets: true,
+        colors: true,
+        errors: true,
+        errorDetails: true,
+        hash: true,
+    },
 };
+
+
+if (process.env.NODE_ENV === 'production') {
+    config.plugins.push(
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                screw_ie8: true,
+                warnings: true,
+                drop_console: true,
+            },
+            beautify: process.env.NODE_ENV !== 'production',
+            comments: process.env.NODE_ENV !== 'production'
+        })
+    )
+}
+else {
+    config.devtool = "source-map"
+}
+
+
+module.exports = config;

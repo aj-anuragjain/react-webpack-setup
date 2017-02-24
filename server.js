@@ -4,8 +4,8 @@ var express = require('express'),
     path = require("path");
 
 
-app.use('/build/', express.static(path.join(__dirname, 'build/')));
-app.use('/static/', express.static(path.join(__dirname + 'static/assets/')));
+app.use('/build/', express.static(path.join(__dirname, 'static/build/')));
+app.use('/assets/', express.static(path.join(__dirname + 'static/assets/')));
 
 
 app.get('/*', function (req, res) {
