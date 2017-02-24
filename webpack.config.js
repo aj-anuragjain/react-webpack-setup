@@ -60,6 +60,15 @@ const config = {
                 }
             },
             {
+                test: /\.css$/,
+                use: ExtractTextPlugin.extract({
+                    fallback: "style-loader",
+                    loader: [
+                        {loader: "css-loader"}
+                    ]
+                })
+            },
+            {
                 test: /\.scss$/,
                 use: ExtractTextPlugin.extract({
                     fallback: "style-loader",
