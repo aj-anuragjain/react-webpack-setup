@@ -55,9 +55,6 @@ const config = {
                 include: js_watcher,
                 exclude: js_exclude,
                 loader: "babel-loader",
-                options: {
-                    presets: ["es2015", "react", "stage-0"]
-                }
             },
             {
                 test: /\.css$/,
@@ -101,7 +98,7 @@ const config = {
                 'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
             }
         }),
-        new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/]),
+        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
             filename: 'js/[name].common.js',
